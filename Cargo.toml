@@ -6,6 +6,7 @@ members = [
     "platforms/android",
     "platforms/atspi-common",
     "platforms/macos",
+    "platforms/ohos",
     "platforms/unix",
     "platforms/windows",
     "platforms/winit",

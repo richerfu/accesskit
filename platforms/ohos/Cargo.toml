@@ -1,0 +1,17 @@
+[package]
+name = "accesskit_ohos"
+version = "0.1.0"
+authors.workspace = true
+license.workspace = true
+description = "AccessKit UI accessibility infrastructure: OpenHarmony adapter"
+categories.workspace = true
+keywords = ["gui", "ui", "accessibility", "openharmony"]
+repository.workspace = true
+readme = "README.md"
+edition.workspace = true
+rust-version = "1.88"
+
+[target.'cfg(target_env = "ohos")'.dependencies]
+accesskit = { version = "0.18.0", path = "../../common" }
+accesskit_consumer = { version = "0.27.0", path = "../../consumer" }
+ohos-accessibility-binding = { version = "0.1.0", features = ["api-24"] }
