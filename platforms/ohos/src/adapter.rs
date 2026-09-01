@@ -351,6 +351,7 @@ impl ProviderCallbacks for Callbacks {
                 state.accessibility_focus = None;
                 return send_target_event(&mut state, target, EventType::AccessibilityFocusCleared);
             }
+            #[cfg(feature = "api-15")]
             ActionType::NextHtmlItem | ActionType::PreviousHtmlItem => {
                 let forward = action == ActionType::NextHtmlItem;
                 let next = adjacent_focusable_node(&state, target, forward)
@@ -425,6 +426,7 @@ impl<'a> Adapter<'a> {
     /// multiple trees through one native provider and supplies the same
     /// instance ID through ArkUI. Normal custom-node and XComponent hosts
     /// should use [`Self::new`].
+    #[cfg(feature = "api-15")]
     pub fn new_with_instance(
         provider: Provider<'a>,
         instance_id: &str,
@@ -610,6 +612,7 @@ fn node_search_text(node: &Node) -> String {
         .join(" ")
 }
 
+#[cfg(feature = "api-15")]
 fn adjacent_focusable_node(state: &State, target: NodeId, forward: bool) -> Option<NodeId> {
     let tree = state.tree.get()?;
     let nodes = subtree_node_ids(&tree.state().root())

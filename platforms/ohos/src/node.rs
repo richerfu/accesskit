@@ -69,6 +69,7 @@ pub(crate) fn populate_element(
     if let Some(hint) = node.placeholder() {
         element.set_hint_text(hint)?.set_is_hint(true)?;
     }
+    #[cfg(feature = "api-24")]
     if let Some(identifier) = node.author_id() {
         element.set_component_identifier(identifier)?;
     }
