@@ -408,9 +408,42 @@ pub struct Adapter<'a> {
 impl<'a> Adapter<'a> {
     pub fn new(
         provider: Provider<'a>,
+        activation_handler: impl ActivationHandler + Send + 'static,
+        action_handler: impl ActionHandler + Send + 'static,
+    ) -> Result<Self> {
+        Self::new_with_registrar(
+            provider,
+            activation_handler,
+            action_handler,
+            |provider, callbacks| provider.register_callbacks(callbacks),
+        )
+    }
+
+    /// Register the multi-instance callback shape introduced in API 15.
+    ///
+    /// Use this only when a third-party framework intentionally multiplexes
+    /// multiple trees through one native provider and supplies the same
+    /// instance ID through ArkUI. Normal custom-node and XComponent hosts
+    /// should use [`Self::new`].
+    pub fn new_with_instance(
+        provider: Provider<'a>,
         instance_id: &str,
         activation_handler: impl ActivationHandler + Send + 'static,
         action_handler: impl ActionHandler + Send + 'static,
+    ) -> Result<Self> {
+        Self::new_with_registrar(
+            provider,
+            activation_handler,
+            action_handler,
+            |provider, callbacks| provider.register_callbacks_with_instance(instance_id, callbacks),
+        )
+    }
+
+    fn new_with_registrar(
+        provider: Provider<'a>,
+        activation_handler: impl ActivationHandler + Send + 'static,
+        action_handler: impl ActionHandler + Send + 'static,
+        register: impl FnOnce(Provider<'a>, Callbacks) -> Result<ProviderRegistration<'a>>,
     ) -> Result<Self> {
         let action_handler: Arc<Mutex<Box<dyn ActionHandler + Send>>> =
             Arc::new(Mutex::new(Box::new(action_handler)));
@@ -427,7 +460,7 @@ impl<'a> Adapter<'a> {
             state: state.clone(),
             action_handler,
         };
-        let registration = provider.register_callbacks_with_instance(instance_id, callbacks)?;
+        let registration = register(provider, callbacks)?;
         Ok(Self {
             _registration: registration,
             state,
