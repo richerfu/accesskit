@@ -513,9 +513,11 @@ impl<'a> Adapter<'a> {
         Ok(())
     }
 
-    /// Set the XComponent/custom-node origin in global screen pixels. AccessKit
-    /// bounds are relative to the tree container, while ArkUI requires screen
-    /// coordinates for accessibility focus rectangles.
+    /// Apply an additional provider-local pixel offset to AccessKit bounds.
+    ///
+    /// ArkUI positions the provider's child tree at the XComponent/custom-node
+    /// origin automatically, so the default `(0, 0)` is correct for normal
+    /// hosts. Use this only when the AccessKit tree has a nested local origin.
     pub fn set_screen_offset(&self, x: i32, y: i32) -> Result<()> {
         let mut state = self
             .state
