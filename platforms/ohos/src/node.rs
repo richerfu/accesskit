@@ -37,7 +37,6 @@ pub(crate) fn populate_element(
         .set_element_id(element_id)?
         .set_parent_id(parent_id)?
         .set_component_type(component_type(node.role()))?
-        .set_child_node_ids(&child_ids)?
         .set_enabled(!node.is_disabled())?
         .set_visible(!node.is_hidden())?
         .set_focusable(node.is_focusable())?
@@ -50,6 +49,13 @@ pub(crate) fn populate_element(
         .set_editable(node.is_text_input() && !node.is_read_only())?
         .set_password(node.role() == Role::PasswordInput)?
         .set_accessibility_level(if node.is_root() { "no" } else { "yes" })?;
+
+    // ArkUI rejects a zero child count with BAD_PARAMETER. Leaf nodes already
+    // have an empty child list by default, so only call the setter when there
+    // are IDs to copy.
+    if !child_ids.is_empty() {
+        element.set_child_node_ids(&child_ids)?;
+    }
 
     if let Some(contents) = node.value() {
         element.set_contents(&contents)?;
