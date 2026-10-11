@@ -1,31 +1,42 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
-    "common",
-    "consumer",
-    "platforms/android",
-    "platforms/atspi-common",
-    "platforms/macos",
-    "platforms/ohos",
-    "platforms/unix",
-    "platforms/windows",
-    "platforms/winit",
+    "accesskit",
+    "accesskit_consumer",
+    "adapters/android",
+    "adapters/atspi-common",
+    "adapters/ios",
+    "adapters/macos",
+    "adapters/ohos",
+    "adapters/unix",
+    "adapters/windows",
+    "adapters/winit",
 ]
 default-members = [
-    "common",
-    "consumer",
-    "platforms/winit",
+    "accesskit",
+    "accesskit_consumer",
+    "adapters/winit",
 ]
 
 [workspace.package]
 authors = ["The AccessKit contributors"]
 categories = ["gui"]
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/AccessKit/accesskit"
-rust-version = "1.77.2"
+rust-version = "1.85"
+
+[workspace.dependencies]
+hashbrown = { version = "0.17", default-features = false, features = ["default-hasher"] }
 
 [profile.release]
 lto = true
 opt-level = "z"
 codegen-units = 1
+
+# Keep the facade, core and geometry types on the same OpenHarmony beta revision.
+[patch.crates-io]
+winit = { git = "https://github.com/richerfu/winit.git", rev = "c9ee2bff8a79aacb8068546e7150197693d35a5a" }
+winit-core = { git = "https://github.com/richerfu/winit.git", rev = "c9ee2bff8a79aacb8068546e7150197693d35a5a" }
+dpi = { git = "https://github.com/richerfu/winit.git", rev = "c9ee2bff8a79aacb8068546e7150197693d35a5a" }
+winit-ohos = { git = "https://github.com/ohos-rs/winit-ohos.git", rev = "6f9ed13689547f9d38b18396cf97b45c7c374f50" }
