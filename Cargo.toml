@@ -25,6 +25,9 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/AccessKit/accesskit"
 rust-version = "1.77.2"
 
+[workspace.dependencies]
+ohos-accessibility-binding = { version = "0.2.0", default-features = false }
+
 [profile.release]
 lto = true
 opt-level = "z"
